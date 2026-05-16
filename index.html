@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LinkedIn com IA | Informática 5.0</title>
+  <style>
+    :root {
+      --ink: #17202b;
+      --muted: #5f6b7a;
+      --paper: #f5f7fb;
+      --panel: #ffffff;
+      --line: #d7dfeb;
+      --linkedin: #0a66c2;
+      --teal: #087b73;
+      --gold: #bd7b12;
+      --coral: #c84f3a;
+      --green-soft: #e7f4f0;
+      --blue-soft: #e8f1fb;
+      --gold-soft: #fbf2df;
+      --coral-soft: #fbebe7;
+      --shadow: 0 18px 50px rgba(23, 32, 43, .13);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(10, 102, 194, .055) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(10, 102, 194, .05) 1px, transparent 1px),
+        #e9eef6;
+      background-size: 34px 34px;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      max-width: 880px;
+      color: var(--linkedin);
+      font-size: clamp(38px, 5.1cqw, 66px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      max-width: 950px;
+      color: var(--linkedin);
+      font-size: clamp(28px, 3.4cqw, 44px);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      color: var(--ink);
+      font-size: clamp(16px, 1.55cqw, 20px);
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    p, li, label, input, textarea, select, button {
+      font-size: clamp(13px, 1.2cqw, 16px);
+      line-height: 1.32;
+    }
+
+    p, li { color: #354154; }
+    strong { color: var(--ink); }
+    ul { margin: 0; padding-left: 1.2rem; }
+    li + li { margin-top: .36rem; }
+
+    .deck {
+      height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 14px 18px 78px;
+    }
+
+    .slide {
+      width: min(1180px, calc(100vw - 36px), calc((100dvh - 116px) * 16 / 9));
+      max-height: calc(100dvh - 116px);
+      aspect-ratio: 16 / 9;
+      display: none;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+      position: relative;
+      background: var(--paper);
+      border: 1px solid rgba(23, 32, 43, .12);
+      box-shadow: var(--shadow);
+      container-type: inline-size;
+    }
+
+    .slide.active { display: grid; }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      padding: clamp(18px, 2.1cqw, 28px) clamp(30px, 3.5cqw, 46px) 6px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+      background: var(--linkedin);
+      border-left: 8px solid var(--gold);
+      border-radius: 6px;
+      padding: 9px 16px;
+      font-size: clamp(14px, 1.45cqw, 18px);
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .lesson {
+      color: var(--muted);
+      font-size: clamp(12px, 1.15cqw, 14px);
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      text-align: right;
+      max-width: 430px;
+    }
+
+    .content {
+      padding: 6px clamp(30px, 3.5cqw, 46px) clamp(24px, 2.8cqw, 34px);
+      min-height: 0;
+      display: grid;
+      gap: clamp(12px, 1.45cqw, 18px);
+      align-content: center;
+    }
+
+    .hero {
+      grid-template-columns: 1fr .92fr;
+      gap: clamp(20px, 2.8cqw, 34px);
+      align-items: center;
+    }
+
+    .subtitle {
+      max-width: 820px;
+      color: #334053;
+      font-size: clamp(18px, 2cqw, 26px);
+      line-height: 1.28;
+      margin-top: 16px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--linkedin);
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pill::before {
+      content: "";
+      width: .6em;
+      height: .6em;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .grid { display: grid; gap: clamp(10px, 1.2cqw, 15px); }
+    .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .92);
+      padding: clamp(12px, 1.35cqw, 16px);
+      min-height: 104px;
+      box-shadow: 0 10px 28px rgba(23, 32, 43, .06);
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: clamp(14px, 1.35cqw, 18px);
+    }
+
+    .card p, .card li { color: #475467; font-size: clamp(12px, 1.1cqw, 15px); }
+    .soft-blue { background: var(--blue-soft); }
+    .soft-green { background: var(--green-soft); }
+    .soft-gold { background: var(--gold-soft); }
+    .soft-coral { background: var(--coral-soft); }
+
+    .workshop {
+      display: grid;
+      grid-template-columns: .88fr 1.12fr;
+      gap: clamp(12px, 1.5cqw, 18px);
+      align-items: stretch;
+      min-height: 0;
+    }
+
+    .action {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: clamp(13px, 1.45cqw, 18px);
+      display: grid;
+      gap: 11px;
+      min-height: 0;
+      box-shadow: 0 12px 32px rgba(23, 32, 43, .07);
+    }
+
+    .action-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: var(--linkedin);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fbfcfe;
+      color: var(--ink);
+      font-family: inherit;
+      padding: 9px 10px;
+      outline: none;
+      resize: vertical;
+    }
+
+    textarea { min-height: 76px; }
+    textarea.tall { min-height: 132px; }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--linkedin);
+      box-shadow: 0 0 0 3px rgba(10, 102, 194, .12);
+    }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: clamp(11px, 1cqw, 13px);
+      font-weight: 700;
+    }
+
+    .prompt {
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--gold);
+      border-radius: var(--radius);
+      background: #fffaf0;
+      padding: 11px 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .prompt code {
+      white-space: pre-wrap;
+      font-family: "Cascadia Mono", Consolas, monospace;
+      color: #263142;
+      font-size: clamp(11px, 1cqw, 13px);
+      line-height: 1.35;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-weight: 850;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    button:hover { border-color: var(--linkedin); color: var(--linkedin); }
+    button.primary { background: var(--linkedin); color: #fff; border-color: var(--linkedin); }
+    button.primary:hover { color: #fff; filter: brightness(.95); }
+
+    .done-toggle.done {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #fff;
+    }
+
+    .profile-shell {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 14px 36px rgba(23, 32, 43, .08);
+      min-height: 0;
+    }
+
+    .cover {
+      height: 104px;
+      background:
+        linear-gradient(90deg, rgba(10, 102, 194, .96), rgba(8, 123, 115, .92)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.18), rgba(255,255,255,.18) 1px, transparent 1px, transparent 18px);
+    }
+
+    .profile-body { padding: 0 18px 18px; }
+
+    .avatar {
+      width: 88px;
+      height: 88px;
+      margin-top: -44px;
+      border: 5px solid #fff;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 38%, #dce7f3 0 17px, transparent 18px),
+        radial-gradient(circle at 50% 88%, #b6c5d8 0 36px, transparent 37px),
+        #f3f6fa;
+      box-shadow: 0 10px 24px rgba(23, 32, 43, .12);
+    }
+
+    .live-name {
+      margin-top: 10px;
+      color: var(--ink);
+      font-weight: 900;
+      font-size: clamp(18px, 2cqw, 25px);
+      line-height: 1.1;
+    }
+
+    .live-headline {
+      margin-top: 5px;
+      color: #364153;
+      font-size: clamp(13px, 1.2cqw, 16px);
+      line-height: 1.28;
+    }
+
+    .live-about {
+      margin-top: 13px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 12px;
+      background: #fbfcfe;
+    }
+
+    .live-about strong, .live-skills strong { margin-bottom: 7px; display: block; }
+
+    .live-text {
+      color: #475467;
+      font-size: clamp(12px, 1.05cqw, 14px);
+      line-height: 1.35;
+      white-space: pre-wrap;
+    }
+
+    .live-skills {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .skill-chip {
+      border: 1px solid var(--line);
+      background: var(--blue-soft);
+      color: #16436d;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 12px;
+    }
+
+    .check {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #354154;
+      font-weight: 750;
+    }
+
+    .check input { width: 18px; height: 18px; flex: 0 0 auto; accent-color: var(--linkedin); }
+
+    .progress-wrap {
+      width: min(290px, 30vw);
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .progress-track {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #dbe4ef;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--linkedin), var(--teal));
+      transition: width .2s ease;
+    }
+
+    .quote {
+      border-left: 8px solid var(--gold);
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      font-size: clamp(18px, 2.1cqw, 30px);
+      line-height: 1.15;
+      font-weight: 850;
+      color: var(--ink);
+      box-shadow: 0 12px 32px rgba(23, 32, 43, .08);
+    }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      min-height: 58px;
+      background: rgba(245, 247, 251, .92);
+      border-top: 1px solid rgba(23, 32, 43, .12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 8px 12px;
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .counter { color: var(--muted); font-weight: 850; min-width: 70px; text-align: center; }
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 72px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 850;
+      box-shadow: 0 14px 34px rgba(23, 32, 43, .16);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      z-index: 20;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 760px) {
+      html, body { overflow-x: hidden; overflow-y: auto; }
+      .deck { height: auto; padding: 12px 18px 86px; display: block; }
+      .slide {
+        width: 100%;
+        max-width: 100%;
+        min-height: calc(100dvh - 104px);
+        max-height: none;
+        aspect-ratio: auto;
+        overflow: visible;
+      }
+      header { padding: 18px 18px 0; }
+      .content { padding: 16px 32px 90px 18px; align-content: start; }
+      .lesson { display: none; }
+      .hero, .workshop, .grid.two, .grid.three, .grid.four, .fields, .checklist {
+        grid-template-columns: 1fr;
+      }
+      h1 { font-size: clamp(34px, 10.5vw, 48px); }
+      h2 { font-size: clamp(24px, 7vw, 30px); overflow-wrap: anywhere; }
+      p, li, strong, .card, .pill, input, textarea, code, .quote { min-width: 0; overflow-wrap: anywhere; }
+      .action-title { align-items: stretch; flex-direction: column; }
+      .action-title button { width: max-content; max-width: 100%; }
+      .progress-wrap { width: 100%; }
+      .footer { flex-wrap: wrap; gap: 8px; }
+      .footer button { padding: 8px 11px; }
+    }
+
+    @media print {
+      html, body { overflow: visible; background: white; }
+      .deck { display: block; height: auto; padding: 0; }
+      .slide {
+        display: grid !important;
+        width: 100vw;
+        height: 100vh;
+        max-height: none;
+        page-break-after: always;
+        box-shadow: none;
+        border: 0;
+      }
+      .footer, .toast { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-live="polite">
+    <section class="slide active" data-step="intro">
+      <header>
+        <div class="tag">Informática 5.0</div>
+        <div class="lesson">Oficina prática | LinkedIn + IA</div>
+      </header>
+      <div class="content hero">
+        <div>
+          <h1>Configure seu LinkedIn com apoio de IA</h1>
+          <p class="subtitle">Cada etapa tem uma ação. Você escreve, revisa, copia prompts e sai com perfil, posicionamento e conteúdo inicial mais prontos.</p>
+          <div class="meta-row">
+            <span class="pill">10:30 às 13:00</span>
+            <span class="pill">Material interativo</span>
+            <span class="pill">Salva no navegador</span>
+          </div>
+        </div>
+        <div class="profile-shell">
+          <div class="cover"></div>
+          <div class="profile-body">
+            <div class="avatar"></div>
+            <div class="live-name" data-live="name">Seu nome profissional</div>
+            <div class="live-headline" data-live="headline">Sua headline aparecerá aqui.</div>
+            <div class="live-about">
+              <strong>Sobre</strong>
+              <div class="live-text" data-live="about">Ao longo da aula, este preview vai sendo preenchido com suas respostas.</div>
+            </div>
+            <div class="live-skills" data-live="skills"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="1">
+      <header><div class="tag">Flow 1</div><div class="lesson">Resultado da aula</div></header>
+      <div class="content">
+        <h2>Hoje você não só estuda LinkedIn. Você configura.</h2>
+        <div class="grid four">
+          <div class="card soft-blue"><strong>Perfil</strong><p>Nome, foto, banner, URL, contato, formação e seções essenciais.</p></div>
+          <div class="card soft-green"><strong>Posicionamento</strong><p>Área, objetivo, habilidades e mensagem profissional clara.</p></div>
+          <div class="card soft-gold"><strong>IA</strong><p>Prompts para melhorar texto sem inventar informações.</p></div>
+          <div class="card soft-coral"><strong>Conteúdo</strong><p>Um rascunho de post profissional conectado ao curso.</p></div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: marque seu ponto de partida</h3>
+            <button class="done-toggle" data-done="flow1">Concluir etapa</button>
+          </div>
+          <div class="checklist">
+            <label class="check"><input type="checkbox" data-store="start_account">Tenho acesso ao LinkedIn</label>
+            <label class="check"><input type="checkbox" data-store="start_photo">Tenho ou vou tirar uma foto profissional</label>
+            <label class="check"><input type="checkbox" data-store="start_course">Tenho cursos/projetos para adicionar</label>
+            <label class="check"><input type="checkbox" data-store="start_ai">Tenho acesso a uma IA para revisar textos</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="2">
+      <header><div class="tag">Flow 2</div><div class="lesson">Identidade visual e contato</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Primeiro, deixe o perfil confiável.</h2>
+          <div class="grid two">
+            <div class="card soft-blue"><strong>Foto</strong><p>Rosto visível, boa luz, fundo limpo e aparência coerente com trabalho.</p></div>
+            <div class="card soft-green"><strong>Banner</strong><p>Área, ferramenta, frase curta ou visual que combine com sua trajetória.</p></div>
+            <div class="card soft-gold"><strong>URL</strong><p>Use um endereço simples, com nome profissional quando possível.</p></div>
+            <div class="card soft-coral"><strong>Contato</strong><p>E-mail profissional e links úteis. Evite expor dados pessoais demais.</p></div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: registre sua configuração</h3>
+            <button class="done-toggle" data-done="flow2">Concluir etapa</button>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Nome no LinkedIn</label><input data-store="name" data-preview="name" placeholder="Ex.: Ana Silva"></div>
+            <div class="field"><label>URL desejada</label><input data-store="url" placeholder="linkedin.com/in/seu-nome"></div>
+            <div class="field"><label>E-mail profissional</label><input data-store="email" placeholder="nome@email.com"></div>
+            <div class="field"><label>Ideia de banner</label><input data-store="banner" placeholder="Ex.: Organização digital e produtividade"></div>
+          </div>
+          <p class="mini-note">Dica: se algo ainda não estiver pronto, escreva o que falta fazer.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="3">
+      <header><div class="tag">Flow 3</div><div class="lesson">Posicionamento pessoal e profissional</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Defina para onde você está indo.</h2>
+          <div class="quote">Posicionamento é a frase que organiza sua imagem profissional: quem sou, que área busco e que valor posso construir.</div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: monte sua frase-base</h3>
+            <button class="done-toggle" data-done="flow3">Concluir etapa</button>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Quem sou / estou me tornando</label><input data-store="identity" placeholder="Estudante de Informática 5.0"></div>
+            <div class="field"><label>Área desejada</label><input data-store="area" placeholder="Apoio administrativo digital"></div>
+            <div class="field"><label>Problema que quero ajudar a resolver</label><input data-store="problem" placeholder="Organizar tarefas e prazos"></div>
+            <div class="field"><label>Ferramentas/habilidades</label><input data-store="tools" placeholder="Google Workspace, planilhas, IA"></div>
+            <div class="field full"><label>Minha frase de posicionamento</label><textarea data-store="positioning" placeholder="Ex.: Estou me formando em Informática 5.0 e quero atuar com apoio administrativo digital, ajudando equipes a organizar tarefas, prazos e informações usando ferramentas como Google Workspace e IA."></textarea></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="4">
+      <header><div class="tag">Flow 4</div><div class="lesson">Headline</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Headline boa é específica, curta e fácil de entender.</h2>
+          <div class="grid two">
+            <div class="card soft-coral"><strong>Evite</strong><p>Em busca de oportunidade | Proativo | Comunicativo | Aprendo rápido</p></div>
+            <div class="card soft-green"><strong>Prefira</strong><p>Estudante de Informática 5.0 | Organização de tarefas, Google Workspace e apoio administrativo digital</p></div>
+          </div>
+          <div class="prompt">
+            <strong>Prompt para copiar</strong>
+            <code data-prompt="headline">Crie 5 opções de headline para LinkedIn com até 220 caracteres. Sou [perfil], estudo [tema], quero atuar com [área] e tenho habilidades em [ferramentas]. Use linguagem profissional, simples e sem exageros.</code>
+            <div class="buttons"><button data-copy-prompt="headline">Copiar prompt</button></div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: escreva sua headline</h3>
+            <button class="done-toggle" data-done="flow4">Concluir etapa</button>
+          </div>
+          <div class="field full">
+            <label>Minha headline final</label>
+            <textarea data-store="headline" data-preview="headline" placeholder="Escreva aqui sua headline revisada"></textarea>
+          </div>
+          <p class="mini-note">Aparecerá automaticamente no preview do perfil.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="5">
+      <header><div class="tag">Flow 5</div><div class="lesson">Sobre</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>O Sobre conecta história, habilidade e direção.</h2>
+          <div class="grid four">
+            <div class="card"><strong>1. Quem sou</strong><p>Seu momento atual.</p></div>
+            <div class="card"><strong>2. O que estudo</strong><p>Curso, ferramentas e área.</p></div>
+            <div class="card"><strong>3. Prova</strong><p>Projeto, experiência ou entrega.</p></div>
+            <div class="card"><strong>4. Direção</strong><p>Oportunidade que busca.</p></div>
+          </div>
+          <div class="prompt">
+            <strong>Prompt para copiar</strong>
+            <code data-prompt="about">Melhore meu texto Sobre mantendo minha voz. Quero parecer profissional, claro e humano, sem prometer o que ainda não entreguei. Estruture em 2 parágrafos curtos e 3 bullets de competências.</code>
+            <div class="buttons"><button data-copy-prompt="about">Copiar prompt</button></div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: rascunhe seu Sobre</h3>
+            <button class="done-toggle" data-done="flow5">Concluir etapa</button>
+          </div>
+          <textarea class="tall" data-store="about" data-preview="about" placeholder="Escreva 2 parágrafos curtos sobre você, seu aprendizado, suas habilidades e sua direção profissional."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="6">
+      <header><div class="tag">Flow 6</div><div class="lesson">Seções essenciais</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Agora configure as seções que dão credibilidade.</h2>
+          <div class="grid two">
+            <div class="card soft-blue"><strong>Formação</strong><p>Curso atual e trilhas relevantes.</p></div>
+            <div class="card soft-green"><strong>Certificados</strong><p>Provas de aprendizagem concluídas.</p></div>
+            <div class="card soft-gold"><strong>Competências</strong><p>Habilidades ligadas ao objetivo.</p></div>
+            <div class="card soft-coral"><strong>Destaques</strong><p>Projeto, post, apresentação ou portfólio.</p></div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: marque o que configurou</h3>
+            <button class="done-toggle" data-done="flow6">Concluir etapa</button>
+          </div>
+          <div class="checklist">
+            <label class="check"><input type="checkbox" data-store="sec_education">Formação atualizada</label>
+            <label class="check"><input type="checkbox" data-store="sec_certificates">Certificados adicionados</label>
+            <label class="check"><input type="checkbox" data-store="sec_skills">Competências escolhidas</label>
+            <label class="check"><input type="checkbox" data-store="sec_featured">Destaques definidos</label>
+            <label class="check"><input type="checkbox" data-store="sec_contact">Contato revisado</label>
+            <label class="check"><input type="checkbox" data-store="sec_privacy">Privacidade conferida</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="7">
+      <header><div class="tag">Flow 7</div><div class="lesson">Experiências e projetos</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Transforme “eu fiz” em prova profissional.</h2>
+          <div class="grid three">
+            <div class="card"><strong>Ação</strong><p>Organizei, atualizei, acompanhei, apoiei, analisei.</p></div>
+            <div class="card"><strong>Ferramenta</strong><p>Sheets, Agenda, Docs, Canva, IA, Trello, Notion.</p></div>
+            <div class="card"><strong>Resultado</strong><p>Mais clareza, menos atraso, processo documentado.</p></div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: descreva uma prova</h3>
+            <button class="done-toggle" data-done="flow7">Concluir etapa</button>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Projeto/experiência</label><input data-store="project_name" placeholder="Ex.: Organização de tarefas do curso"></div>
+            <div class="field"><label>Ferramentas usadas</label><input data-store="project_tools" placeholder="Google Tasks, Agenda, Docs, IA"></div>
+            <div class="field full"><label>Descrição para o LinkedIn</label><textarea data-store="project_description" placeholder="Descreva em 2 a 4 linhas o que você fez, como fez e qual foi o resultado."></textarea></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="8">
+      <header><div class="tag">Flow 8</div><div class="lesson">Competências e destaques</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Escolha poucas competências e uma prova visível.</h2>
+          <div class="quote">Competência sem prova vira promessa. Projeto, certificado e portfólio tornam o perfil mais confiável.</div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: escolha suas 5 competências</h3>
+            <button class="done-toggle" data-done="flow8">Concluir etapa</button>
+          </div>
+          <div class="fields">
+            <div class="field full"><label>Competências principais</label><input data-store="skills" data-preview="skills" placeholder="Ex.: Google Sheets, organização de tarefas, atendimento, comunicação, IA"></div>
+            <div class="field full"><label>Prova para Destaques</label><textarea data-store="featured" placeholder="Qual projeto, certificado, post ou portfólio você pode destacar?"></textarea></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="9">
+      <header><div class="tag">Flow 9</div><div class="lesson">IA com senso crítico</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>IA ajuda. Você decide.</h2>
+          <div class="grid three">
+            <div class="card soft-blue"><strong>Clarear</strong><p>Transforme ideias soltas em texto objetivo.</p></div>
+            <div class="card soft-green"><strong>Comparar</strong><p>Peça versões diferentes e escolha a melhor.</p></div>
+            <div class="card soft-gold"><strong>Revisar</strong><p>Cheque tom, clareza, fatos e promessas.</p></div>
+          </div>
+          <p><strong>Regra:</strong> nunca publique texto de IA sem revisar.</p>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: use um prompt de revisão</h3>
+            <button class="done-toggle" data-done="flow9">Concluir etapa</button>
+          </div>
+          <div class="prompt">
+            <strong>Prompt para copiar</strong>
+            <code data-prompt="review">Revise este texto de LinkedIn. Aponte frases genéricas, exageradas, confusas ou pouco profissionais. Sugira uma versão mais clara, humana e verdadeira, mantendo minha voz e sem inventar informações.</code>
+            <div class="buttons"><button data-copy-prompt="review">Copiar prompt</button></div>
+          </div>
+          <textarea data-store="ai_revision_notes" placeholder="Cole aqui a melhor sugestão da IA ou anote o que você decidiu ajustar."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="10">
+      <header><div class="tag">Flow 10</div><div class="lesson">Conteúdo profissional</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Agora crie um post simples para mostrar aprendizado.</h2>
+          <div class="grid four">
+            <div class="card"><strong>Aprendizado</strong><p>O que aprendi hoje?</p></div>
+            <div class="card"><strong>Processo</strong><p>Como pratiquei?</p></div>
+            <div class="card"><strong>Resultado</strong><p>O que configurei?</p></div>
+            <div class="card"><strong>Próximo passo</strong><p>O que vou melhorar?</p></div>
+          </div>
+          <div class="prompt">
+            <strong>Prompt para copiar</strong>
+            <code data-prompt="post">Crie um rascunho de post para LinkedIn sobre o que aprendi hoje em uma aula de Informática 5.0. O tema foi LinkedIn, posicionamento profissional e IA. Use tom simples, humano e profissional. Estruture com: aprendizado, exemplo prático e próximo passo.</code>
+            <div class="buttons"><button data-copy-prompt="post">Copiar prompt</button></div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: escreva seu rascunho</h3>
+            <button class="done-toggle" data-done="flow10">Concluir etapa</button>
+          </div>
+          <textarea class="tall" data-store="post_draft" placeholder="Escreva ou cole aqui seu post revisado."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="11">
+      <header><div class="tag">Flow 11</div><div class="lesson">Networking com intenção</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Conexão boa tem contexto.</h2>
+          <div class="grid three">
+            <div class="card soft-blue"><strong>Quem seguir</strong><p>Empresas, profissionais e escolas ligados à sua área.</p></div>
+            <div class="card soft-green"><strong>Como comentar</strong><p>Use pergunta, exemplo ou aprendizado real.</p></div>
+            <div class="card soft-gold"><strong>Como conectar</strong><p>Mensagem curta, educada e específica.</p></div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Faça agora: escreva uma mensagem</h3>
+            <button class="done-toggle" data-done="flow11">Concluir etapa</button>
+          </div>
+          <textarea data-store="connection_message" placeholder="Olá, [nome]. Vi seu conteúdo sobre [tema] e estou estudando Informática 5.0, com foco em LinkedIn, produtividade e IA. Gostaria de acompanhar seus conteúdos por aqui."></textarea>
+          <div class="buttons"><button data-copy-field="connection_message">Copiar mensagem</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-step="12">
+      <header><div class="tag">Entrega</div><div class="lesson">Checklist final</div></header>
+      <div class="content workshop">
+        <div>
+          <h2>Você sai hoje com o LinkedIn mais claro e configurado.</h2>
+          <div class="profile-shell">
+            <div class="cover"></div>
+            <div class="profile-body">
+              <div class="avatar"></div>
+              <div class="live-name" data-live="name">Seu nome profissional</div>
+              <div class="live-headline" data-live="headline">Sua headline aparecerá aqui.</div>
+              <div class="live-about"><strong>Sobre</strong><div class="live-text" data-live="about">Seu Sobre aparecerá aqui.</div></div>
+              <div class="live-skills" data-live="skills"></div>
+            </div>
+          </div>
+        </div>
+        <div class="action">
+          <div class="action-title">
+            <h3>Checklist final da aula</h3>
+            <button class="done-toggle" data-done="flow12">Finalizar</button>
+          </div>
+          <div class="checklist">
+            <label class="check"><input type="checkbox" data-store="final_identity">Identidade visual revisada</label>
+            <label class="check"><input type="checkbox" data-store="final_headline">Headline configurada</label>
+            <label class="check"><input type="checkbox" data-store="final_about">Sobre revisado</label>
+            <label class="check"><input type="checkbox" data-store="final_sections">Seções essenciais atualizadas</label>
+            <label class="check"><input type="checkbox" data-store="final_ai">Texto revisado com IA</label>
+            <label class="check"><input type="checkbox" data-store="final_post">Post profissional rascunhado</label>
+          </div>
+          <div class="buttons">
+            <button class="primary" id="exportSummary">Gerar resumo</button>
+            <button id="clearData">Limpar respostas</button>
+          </div>
+          <textarea class="tall" id="summaryOutput" readonly placeholder="Seu resumo aparecerá aqui."></textarea>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="footer" aria-label="Controles dos slides">
+    <button type="button" id="prev">← Anterior</button>
+    <div class="counter" id="counter">1 / 13</div>
+    <div class="progress-wrap">
+      <span id="progressText">0% concluído</span>
+      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+    </div>
+    <button type="button" id="next">Próximo →</button>
+  </nav>
+  <div class="toast" id="toast">Copiado</div>
+
+  <script>
+    const storagePrefix = "linkedin-ai-workshop:";
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const counter = document.getElementById("counter");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const toast = document.getElementById("toast");
+    let current = 0;
+
+    function key(name) {
+      return storagePrefix + name;
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 1400);
+    }
+
+    function saveValue(element) {
+      const name = element.dataset.store;
+      if (!name) return;
+      const value = element.type === "checkbox" ? element.checked : element.value;
+      localStorage.setItem(key(name), JSON.stringify(value));
+      updatePreview();
+      updateProgress();
+    }
+
+    function loadValues() {
+      document.querySelectorAll(".done-toggle").forEach((button) => {
+        button.dataset.label = button.textContent;
+      });
+
+      document.querySelectorAll("[data-store]").forEach((element) => {
+        const saved = localStorage.getItem(key(element.dataset.store));
+        if (saved === null) return;
+        const value = JSON.parse(saved);
+        if (element.type === "checkbox") element.checked = Boolean(value);
+        else element.value = value;
+      });
+
+      document.querySelectorAll(".done-toggle").forEach((button) => {
+        const saved = localStorage.getItem(key(button.dataset.done));
+        if (saved === "true") button.classList.add("done");
+        button.textContent = button.classList.contains("done") ? "Etapa concluída" : button.dataset.label;
+      });
+    }
+
+    function getValue(name, fallback = "") {
+      const raw = localStorage.getItem(key(name));
+      if (raw === null) return fallback;
+      return JSON.parse(raw) || fallback;
+    }
+
+    function updatePreview() {
+      const name = getValue("name", "Seu nome profissional");
+      const headline = getValue("headline", "Sua headline aparecerá aqui.");
+      const about = getValue("about", "Seu Sobre aparecerá aqui.");
+      const skills = String(getValue("skills", "")).split(",").map((item) => item.trim()).filter(Boolean).slice(0, 7);
+
+      document.querySelectorAll('[data-live="name"]').forEach((element) => element.textContent = name);
+      document.querySelectorAll('[data-live="headline"]').forEach((element) => element.textContent = headline);
+      document.querySelectorAll('[data-live="about"]').forEach((element) => element.textContent = about);
+      document.querySelectorAll('[data-live="skills"]').forEach((element) => {
+        element.innerHTML = skills.map((skill) => `<span class="skill-chip">${skill}</span>`).join("");
+      });
+    }
+
+    function updateProgress() {
+      const doneButtons = Array.from(document.querySelectorAll(".done-toggle"));
+      const done = doneButtons.filter((button) => button.classList.contains("done")).length;
+      const percent = Math.round((done / doneButtons.length) * 100);
+      progressText.textContent = `${percent}% concluído`;
+      progressBar.style.width = `${percent}%`;
+    }
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, slideIndex) => slide.classList.toggle("active", slideIndex === current));
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      const url = new URL(window.location);
+      url.searchParams.set("slide", String(current + 1));
+      history.replaceState(null, "", url);
+    }
+
+    function copyText(text) {
+      navigator.clipboard?.writeText(text).then(
+        () => showToast("Copiado"),
+        () => {
+          const area = document.createElement("textarea");
+          area.value = text;
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand("copy");
+          area.remove();
+          showToast("Copiado");
+        }
+      );
+    }
+
+    document.querySelectorAll("[data-store]").forEach((element) => {
+      element.addEventListener("input", () => saveValue(element));
+      element.addEventListener("change", () => saveValue(element));
+    });
+
+    document.querySelectorAll(".done-toggle").forEach((button) => {
+      button.addEventListener("click", () => {
+        button.classList.toggle("done");
+        button.textContent = button.classList.contains("done") ? "Etapa concluída" : button.dataset.label;
+        localStorage.setItem(key(button.dataset.done), button.classList.contains("done"));
+        updateProgress();
+      });
+    });
+
+    document.querySelectorAll("[data-copy-prompt]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const prompt = document.querySelector(`[data-prompt="${button.dataset.copyPrompt}"]`)?.textContent || "";
+        copyText(prompt.trim());
+      });
+    });
+
+    document.querySelectorAll("[data-copy-field]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const value = getValue(button.dataset.copyField, "");
+        copyText(value);
+      });
+    });
+
+    document.getElementById("exportSummary").addEventListener("click", () => {
+      const summary = [
+        `Nome: ${getValue("name", "")}`,
+        `Headline: ${getValue("headline", "")}`,
+        "",
+        "Sobre:",
+        getValue("about", ""),
+        "",
+        `Competências: ${getValue("skills", "")}`,
+        `Prova/Destaque: ${getValue("featured", "")}`,
+        "",
+        "Post profissional:",
+        getValue("post_draft", ""),
+        "",
+        "Mensagem de conexão:",
+        getValue("connection_message", "")
+      ].join("\n");
+      document.getElementById("summaryOutput").value = summary;
+      copyText(summary);
+    });
+
+    document.getElementById("clearData").addEventListener("click", () => {
+      if (!confirm("Limpar todas as respostas salvas neste navegador?")) return;
+      Object.keys(localStorage).filter((item) => item.startsWith(storagePrefix)).forEach((item) => localStorage.removeItem(item));
+      document.querySelectorAll("[data-store]").forEach((element) => {
+        if (element.type === "checkbox") element.checked = false;
+        else element.value = "";
+      });
+      document.querySelectorAll(".done-toggle").forEach((button) => {
+        button.classList.remove("done");
+        button.textContent = button.dataset.label;
+      });
+      document.getElementById("summaryOutput").value = "";
+      updatePreview();
+      updateProgress();
+      showToast("Respostas limpas");
+    });
+
+    document.getElementById("prev").addEventListener("click", () => showSlide(current - 1));
+    document.getElementById("next").addEventListener("click", () => showSlide(current + 1));
+    window.addEventListener("keydown", (event) => {
+      const tag = document.activeElement?.tagName;
+      const isTyping = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+      if (isTyping) return;
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") showSlide(current + 1);
+      if (event.key === "ArrowLeft" || event.key === "PageUp") showSlide(current - 1);
+      if (event.key === "Home") showSlide(0);
+      if (event.key === "End") showSlide(slides.length - 1);
+    });
+
+    loadValues();
+    updatePreview();
+    updateProgress();
+
+    const requested = Number(new URL(window.location).searchParams.get("slide"));
+    if (Number.isFinite(requested) && requested > 0) showSlide(requested - 1);
+    else showSlide(0);
+  </script>
+</body>
+</html>
